@@ -1,34 +1,55 @@
 const jwt=require("jsonwebtoken")
 const bcrypt=require("bcrypt")
 
-const User=require("../models/User")
+const db=require("../models/index");
+const {User}=db;
+const { QueryInterface } = require("sequelize");
 
 
 const signup=async(req,res,next)=> {
     
-    const {username,password:plainTextPassword}=req.body;
-    if(!username || typeof username!== 'string') {
-        req.error="Invalid Username"
-    }
-    if(!plainTextPassword || typeof plainTextPassword !== 'string') {
-        req.error="Invalid Password";
-    }
-    if(plainTextPassword.length<6) {
-        req.error="Password should be atleast 6 characters long."
-    }
-
-    const password=await bcrypt.hash(plainTextPassword,10);
+    
 
     try {
-        await User.sync()
+
+
+        const {username,password:plainTextPassword}=req.body;
+        
+        
+        if(!username || typeof username !== 'string') {
+            console.log("err")
+            req.error="Invalid Username";
+            next();
+        }
+        if(!plainTextPassword || typeof plainTextPassword !== 'string') {
+            req.error="Invalid Password";
+            next();
+        }
+        if(plainTextPassword.length<6) {
+            req.error="Password should be atleast 6 characters long."
+            next();
+        }
+
+        const password=await bcrypt.hash(plainTextPassword,10);
+
+        console.log(username," ",plainTextPassword)
+        
+        // const user=User.create([{
+        //     username:username,
+        //     password:password
+        // }]);
         const user=await User.create({
             username:username,
             password:password
         })
+        console.log(user)
+        
         req.data=user.dataValues
+        
         next()
     }
     catch(err) {
+        req.error=err;
         next(err)
     }
 

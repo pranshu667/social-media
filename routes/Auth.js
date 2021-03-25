@@ -1,6 +1,6 @@
 const router=require("express").Router();
 
-const {authenticateDbConnection}=require("../models/index");
+
 const {signup,login}=require("../controllers/Auth")
 
 router.post("/register",signup,(req,res)=> {

@@ -1,41 +1,35 @@
-const User=require("../models/User");
-const fs=require("fs");
+
+const db=require("../models/index")
+const User=db.User
+let {Op}=require("sequelize")
 
 
-const createUser=async(req,res,next)=> {
-    
 
-    try {
-        let {firstName,lastName}=req.body;
 
-    
-        await User.sync()
-        const user=await User.create({
-            firstName:firstName,
-            lastName:lastName
-        })
-
-        req.data=user.dataValues
-        next();
-    }
-    catch(err) {
-        next(err)
-    }
-    
-
-}
 
 const findUser=async (req,res,next)=> {
     try {
-        let users=await User.findAll({
+        let {query}=req;
+        let {username}=query 
+        if(username === undefined) {
+            username="";
+        }
+        username+='%'
+        console.log(username)
+        let user=await User.findAll({
             where:{
-                firstName:"Pranshu"
+                username:{
+                    [Op.like]:username
+                }
             }
         })
-        req.data=users
+
+        
+        req.data=user
         next()
     }
     catch(err) {
+        console.log(err)
         next(err)
     }
 
@@ -45,4 +39,4 @@ const findUser=async (req,res,next)=> {
 
 
 
-module.exports={createUser:createUser,findUser:findUser}
+module.exports={findUser:findUser}

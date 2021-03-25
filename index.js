@@ -1,9 +1,6 @@
 const express=require("express");
-const formidable = require('express-formidable');
+
 const bodyParser=require("body-parser")
-
-
-
 require("dotenv").config();
 
 //routes
@@ -17,10 +14,10 @@ const authRoute=require("./routes/Auth");
 const app=express();
 const port=process.env.PORT || 5100;
 
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 
-//app.use(formidable());
+
 
 app.use("/users",userRoute);
 app.use("/posts",postRoute);
