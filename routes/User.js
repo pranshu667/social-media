@@ -5,4 +5,5 @@ router.get("/",findUser,(req,res)=> {
     res.send(req.data);
 });
 
+
 module.exports=router;
